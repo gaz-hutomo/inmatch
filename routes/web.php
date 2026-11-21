@@ -25,6 +25,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/backgrounds', [\App\Http\Controllers\AdminController::class, 'storeBackground'])->name('backgrounds.store');
     Route::patch('/backgrounds/{background}/toggle', [\App\Http\Controllers\AdminController::class, 'toggleBackground'])->name('backgrounds.toggle');
     Route::delete('/backgrounds/{background}', [\App\Http\Controllers\AdminController::class, 'deleteBackground'])->name('backgrounds.delete');
+    Route::get('/reports', [\App\Http\Controllers\AdminController::class, 'reports'])->name('reports');
+    Route::patch('/reports/{report}/status', [\App\Http\Controllers\AdminController::class, 'updateReportStatus'])->name('reports.updateStatus');
 });
 
 // Client Routes
@@ -83,6 +85,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{endorsement}/receipt', [\App\Http\Controllers\CollaborationController::class, 'receipt'])->name('receipt');
         Route::post('/{endorsement}/complete', [\App\Http\Controllers\CollaborationController::class, 'complete'])->name('complete');
         Route::post('/{endorsement}/rate', [\App\Http\Controllers\CollaborationController::class, 'rate'])->name('rate');
+        Route::post('/{endorsement}/report', [\App\Http\Controllers\ReportController::class, 'store'])->name('report');
     });
 });
 

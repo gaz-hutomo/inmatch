@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Stat Card 1 -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center gap-4">
             <div class="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-2xl">
@@ -38,5 +38,16 @@
                 <h3 class="text-2xl font-bold text-gray-900">{{ $stats['active_backgrounds'] }}</h3>
             </div>
         </div>
+
+        <!-- Stat Card 4 -->
+        <a href="{{ route('admin.reports') }}" class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center gap-4 hover:border-red-200 transition-all hover:shadow-md">
+            <div class="w-14 h-14 rounded-full bg-red-50 text-red-600 flex items-center justify-center text-2xl">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            </div>
+            <div>
+                <p class="text-sm font-medium text-gray-500">Laporan Menunggu</p>
+                <h3 class="text-2xl font-bold text-red-600">{{ $stats['pending_reports'] ?? 0 }}</h3>
+            </div>
+        </a>
     </div>
 </x-admin-layout>

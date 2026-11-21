@@ -45,4 +45,9 @@ class Endorsement extends Model
     {
         return $this->hasOne(Rating::class);
     }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class);
+    }
 }

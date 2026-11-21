@@ -1,5 +1,5 @@
 <x-user-layout>
-    <div x-data="{ activeMedia: null, mediaType: null, showPaymentModal: false, selectedPayment: null, paymentStep: 1 }">
+    <div x-data="{ activeMedia: null, mediaType: null, showPaymentModal: false, selectedPayment: null, paymentStep: 1, showReportModal: false }">
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-bold text-2xl text-gray-900 leading-tight">
@@ -169,6 +169,14 @@
                         @endif
                     </div>
                 @endif
+
+                <!-- Report Issue Button -->
+                <div class="pt-4 border-t border-gray-100 text-center">
+                    <button type="button" @click="showReportModal = true" class="text-xs text-red-500 hover:text-red-700 font-semibold flex items-center justify-center gap-1.5 mx-auto transition-colors">
+                        <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        Laporkan Kendala Proyek
+                    </button>
+                </div>
 
             </div>
         </div>
@@ -393,6 +401,57 @@
             </div>
         </div>
     </div>
+
+    <!-- Report Modal -->
+    <template x-if="showReportModal">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" @click="showReportModal = false">
+            <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl relative" @click.stop>
+                <div class="flex items-center justify-between pb-3 border-b mb-4">
+                    <h3 class="font-bold text-gray-900 text-lg flex items-center gap-2 text-red-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        Laporkan Kendala Proyek
+                    </h3>
+                    <button type="button" @click="showReportModal = false" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+
+                <form action="{{ route('collaborations.report', $endorsement->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Alasan Pengaduan</label>
+                        <select name="reason" class="w-full text-sm border-gray-300 rounded-xl focus:border-red-500 focus:ring-red-500" required>
+                            <option value="Hasil Kerja Tidak Sesuai Brief">Hasil Kerja Tidak Sesuai Brief</option>
+                            <option value="Komunikasi Tidak Responsif / Menghilang">Komunikasi Tidak Responsif / Menghilang</option>
+                            <option value="Pelanggaran Etika / Kata-kata Kasar">Pelanggaran Etika / Kata-kata Kasar</option>
+                            <option value="Dugaan Penipuan / Plagiarisme">Dugaan Penipuan / Plagiarisme</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Rincian Kronologi Masalah</label>
+                        <textarea name="description" rows="4" class="w-full text-sm border-gray-300 rounded-xl focus:border-red-500 focus:ring-red-500" placeholder="Jelaskan secara jelas kendala yang Anda alami..." required></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 mb-1">Bukti Lampiran (Opsional, Maks 5MB)</label>
+                        <input type="file" name="proof_file" accept="image/*,.pdf,video/mp4" class="block w-full text-xs text-gray-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
+                        <p class="text-[11px] text-gray-400 mt-1">Format: JPG, PNG, PDF, atau MP4.</p>
+                    </div>
+
+                    <div class="pt-3 flex items-center justify-end gap-3 border-t">
+                        <button type="button" @click="showReportModal = false" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl text-xs transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition-colors shadow-sm">
+                            Kirim Laporan ke Admin
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </template>
 
     <!-- Scroll to bottom script -->
     <script>

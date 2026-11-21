@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\DynamicBackground;
+use App\Models\Report;
 
 class AdminController extends Controller
 {
@@ -14,7 +15,8 @@ class AdminController extends Controller
         $stats = [
             'total_users' => User::count(),
             'pending_users' => User::where('status', 'pending')->count(),
-            'active_backgrounds' => DynamicBackground::where('is_active', true)->count()
+            'active_backgrounds' => DynamicBackground::where('is_active', true)->count(),
+            'pending_reports' => Report::where('status', 'pending')->count(),
         ];
         return view('admin.dashboard', compact('stats'));
     }
@@ -116,5 +118,32 @@ class AdminController extends Controller
     {
         $background->delete();
         return back()->with('status', 'Background berhasil dihapus.');
+    }
+
+    public function reports(Request $request)
+    {
+        $query = Report::with(['reporter', 'reported', 'endorsement'])->latest();
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        $reports = $query->paginate(15);
+        $pendingCount = Report::where('status', 'pending')->count();
+        return view('admin.reports', compact('reports', 'pendingCount'));
+    }
+
+    public function updateReportStatus(Request $request, Report $report)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,reviewed,resolved',
+            'ban_reported' => 'nullable|boolean',
+        ]);
+
+        $report->update(['status' => $request->status]);
+
+        if ($request->boolean('ban_reported') && $report->reported) {
+            $report->reported->update(['status' => 'banned']);
+        }
+
+        return back()->with('status', 'Status laporan berhasil diperbarui.');
     }
 }
